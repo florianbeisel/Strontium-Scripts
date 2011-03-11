@@ -25,7 +25,7 @@ numworlds=${#worlds[@]}
 # Set these for the amount of RAM you want to allocate. Good practice is to have the numbers match.
 # This is the Java heap max and initial size.
  
-javaparams="-server -Xmx5500M -Xms2048M"
+javaparams="-server -Xmx5000M -Xms2048M"
  
 # You can find this location with "whereis java". Make sure this points to the binary.
  
