@@ -1,5 +1,8 @@
 #!/bin/bash
 
+declare -a worlds=(Kubo Nether)
+numworlds=${#worlds[@]}
+
 date
 if [ "$(ps aux|egrep -v 'grep|pigmap.sh'|egrep 'python|rsync|pigmap')" ] 
 then
@@ -9,19 +12,17 @@ else
 	echo "Starting Update"
 
 	cd /home/minecraft/pigmap
-        sh ../scripts/server.sh stopsave
+    sh ../scripts/server.sh stopsave
 
-	rsync -vur --delete ../server/Strontium/ maps/Strontium > Strontium.chunklist
-	rsync -vur --delete ../server/EyeOfTerror/ maps/EyeOfTerror > EyeOfTerror.chunklist
-       #rsync -vur --delete [...]
+    for ((i=0;i<$numworlds;i++)); do
+        rsync -vur --delete ../server/${worlds[$i]}/ maps/${worlds[$i]} > ${worlds[$i]}.chunklist
+    done
 
-        sh ../scripts/server.sh startsave
-
-	nice -19 ./pigmap -i maps/Strontium -g images -o output/Strontium -r Strontium.chunklist -h 2 -x
-	nice -19 ./pigmap -i maps/EyeOfTerror -g images -o output/EyeOfTerror -r EyeOfTerror.chunklist -h 2 -x
-
-	#python gmap.py --cachedir=cache/Strontium/unlit -p2 maps/Strontium/ output/Strontium/
-	#python gmap.py --cachedir=cache/EyeOfTerror/unlit -p2 maps/EyeOfTerror/ output/EyeOfTerror/
+    sh ../scripts/server.sh startsave
+    
+    for ((i=0;i<$numworlds;i++)); do
+        nice 19 ./pigmap -i maps/${worlds[$i]} -g images -o output/${worlds[$i]} -r ${worlds[$i]}.chunklist -h 2 -x
+    done
 
 fi
 date
